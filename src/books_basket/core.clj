@@ -7,6 +7,7 @@
   {
    :fantasy (fn [number-of-books base-price] (* 0.8 base-price))
    :it (fn [number-of-books base-price] (if (> number-of-books 2) (* 0.7 base-price) (* 0.9 base-price)))
+   :travel (fn [number-of-books base-price] (if (> number-of-books 3) (* 0.6 base-price) base-price))
    })
 
 (defn- calculate-base-price [books] (reduce + (map :price books)))

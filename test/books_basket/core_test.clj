@@ -17,3 +17,8 @@
   (testing "Give 30% discount for each IT book when there are more than two of them and 10% otherwise."
     (is (== 18 (total [(Book. :it 20)])))
     (is (== 42 (total [(Book. :it 20) (Book. :it 10) (Book. :it 30)])))))
+
+(deftest calculate-travel-book
+  (testing "Give 40% discount for Travel books when there are more than three of them and no discount otherwise."
+    (is (== 20 (total [(Book. :travel 20)])))
+    (is (== 48 (total [(Book. :travel 20) (Book. :travel 20) (Book. :travel 10) (Book. :travel 30)])))))

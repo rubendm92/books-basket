@@ -4,6 +4,16 @@
   (:import (books_basket.core Book)))
 
 (deftest calculate-no-discount
-  (testing "When no book is eligible for discount, the price is the sum of all book prices"
-    (is (= 10 (total [(Book. :history 10)])))
-    (is (= 15 (total [(Book. :history 10) (Book. :history 5)])))))
+  (testing "Give no discount when a book is not eligible for a discount."
+    (is (== 10 (total [(Book. :history 10)])))
+    (is (== 15 (total [(Book. :history 10) (Book. :history 5)])))))
+
+(deftest calculate-fantasy-book
+  (testing "Give 20% discount for each Fantasy book."
+    (is (== 16 (total [(Book. :fantasy 20)])))
+    (is (== 13 (total [(Book. :fantasy 10) (Book. :history 5)])))))
+
+(deftest calculate-IT-book
+  (testing "Give 30% discount for each IT book when there are more than two of them and 10% otherwise."
+    (is (== 18 (total [(Book. :it 20)])))
+    (is (== 42 (total [(Book. :it 20) (Book. :it 10) (Book. :it 30)])))))

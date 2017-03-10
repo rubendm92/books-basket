@@ -3,19 +3,18 @@
 
 (defrecord Book [genre price])
 
-(defmulti apply-discount (fn [[genre [number-of-books base-price]]] genre))
-(defmethod apply-discount :fantasy [[_ [_ base-price]]] (* 0.8 base-price))
-(defmethod apply-discount :it [[_ [number-of-books base-price]]] (if (> number-of-books 2) (* 0.7 base-price) (* 0.9 base-price)))
-(defmethod apply-discount :travel [[_ [number-of-books base-price]]] (if (> number-of-books 3) (* 0.6 base-price) base-price))
-(defmethod apply-discount :default [[_ [_ base-price]]] base-price)
-
 (defn- calculate-base-price [books] (reduce + (map :price books)))
 
-(defn- genre-entry [[genre books]]
-  (vector genre (vector (count books) (calculate-base-price books))))
+(defmulti calculate-price (fn [[genre books]] genre))
+(defmethod calculate-price :fantasy [[_ books]]
+  (* 0.8 (calculate-base-price books)))
+(defmethod calculate-price :it [[_ books]]
+  (if (> (count books) 2) (* 0.7 (calculate-base-price books)) (* 0.9 (calculate-base-price books))))
+(defmethod calculate-price :travel [[_ books]]
+  (if (> (count books) 3) (* 0.6 (calculate-base-price books)) (calculate-base-price books)))
+(defmethod calculate-price :default [[_ books]]
+  (calculate-base-price books))
 
-(defn- price-by-book-genre [books] (map genre-entry (group-by :genre books)))
+(defn- price-by-book-genre [books] (map calculate-price (group-by :genre books)))
 
-(defn- calculate-price [books] (map apply-discount (price-by-book-genre books)))
-
-(defn total [books] (reduce + (calculate-price books)))
+(defn total [books] (reduce + (price-by-book-genre books)))
